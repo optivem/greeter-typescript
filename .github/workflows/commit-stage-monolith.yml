@@ -83,11 +83,15 @@ jobs:
 
       - name: Run Code Analysis
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: npx sonar-scanner -Dsonar.projectKey=optivem_greeter-typescript -Dsonar.organization=optivem -Dsonar.sources=src
-        working-directory: monolith
+        uses: SonarSource/sonarcloud-github-action@v5
+        with:
+          projectBaseDir: monolith
+          args: >
+            -Dsonar.projectKey=optivem_greeter-typescript
+            -Dsonar.organization=optivem
+            -Dsonar.sources=src
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
       - name: Build Artifact
         if: github.ref == 'refs/heads/main'
