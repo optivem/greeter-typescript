@@ -82,7 +82,7 @@ jobs:
         working-directory: monolith
 
       - name: Run Code Analysis
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         uses: SonarSource/sonarcloud-github-action@v5
         with:
           projectBaseDir: monolith
