@@ -61,30 +61,38 @@ export class AppService {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const todo = await response.json();
-        
+        const todo: unknown = await response.json();
+
         if (!todo) {
           throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
         }
-        
+
         return todo;
-      } catch (error) {
-        if (error instanceof HttpException && error.getStatus() === HttpStatus.NOT_FOUND) {
+      } catch (error: unknown) {
+        if (
+          error instanceof HttpException &&
+          error.getStatus() === (HttpStatus.NOT_FOUND as number)
+        ) {
           throw error;
         }
 
         if (attempt === this.maxRetries - 1) {
+          const message =
+            error instanceof Error ? error.message : String(error);
           throw new HttpException(
-            `External API is unavailable after ${this.maxRetries} attempts: ${error.message}`,
+            `External API is unavailable after ${this.maxRetries} attempts: ${message}`,
             HttpStatus.SERVICE_UNAVAILABLE,
           );
         }
 
-        await new Promise(resolve => setTimeout(resolve, this.retryDelayMs));
+        await new Promise((resolve) => setTimeout(resolve, this.retryDelayMs));
       }
     }
 
-    throw new HttpException('Unexpected error', HttpStatus.INTERNAL_SERVER_ERROR);
+    throw new HttpException(
+      'Unexpected error',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
 
   getTodosPageHtml(): string {
