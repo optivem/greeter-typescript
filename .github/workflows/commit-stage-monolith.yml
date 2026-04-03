@@ -96,6 +96,7 @@ jobs:
           projectBaseDir: monolith
           args: >
             -Dsonar.projectKey=optivem_greeter-typescript
+            -Dsonar.projectName=greeter-typescript
             -Dsonar.organization=optivem
             -Dsonar.sources=src
 
